@@ -1,0 +1,33 @@
+1. HOW TO DEPLOY THE PLATFORM
+
+- Setup the project path env variable: export PROJECT_PATH=~/your_project_path.
+- book the resources needed for your experiment $PROJECT_PATH/deployment/book.sh -n 4 -c taurus -t 4 
+- the previous command will prompt a job id, use this id to deploy the cloud_stack platform: $PROJECT_PATH/deployment/deploy.sh job_id
+- finally, you can install all the applications contained in elastica project by executing: $PROJECT_PATH/deployment/install.sh job_id
+- That is it! You are ready to connect to the controller machine and run your experiments
+
+2. HOW TO CREATE DISK IMAGES
+
+- You can create images by executing: $PROJECT_PATH/apicloud/create_disk_images.sh <w | LB | db>
+  * w stands for worker
+  * LB for load balancer
+  * db for Database 
+
+3. HOW TO CREATE A VIRTUAL MACHINE INSTANCE
+
+- You can create a VM by executing: $PROJECT_PATH/apicloud/new_vm.sh <vm_flavor> <name_vm> <LB|w|db> <name_tier>
+
+4. HOW TO SCALE OUT/IN 
+
+- You can scale out/in the infrastructure of a tier by executing: 
+   * $PROJECT_PATH/apicloud/scale_iaas.sh <out | in> <tier_name>
+   * $PROJECT_PATH/apicloud/scale_saas.sh <up | down> <tier_name>
+- You can scale down/up the components of a tier by executing: 
+   * $PROJECT_PATH/apicloud/scale_saas.sh <up | down> <tier_name>
+
+5. TO RUN A SCENARIO
+
+- You can use a gatling scenario to test your configurations. To that end you have to first 
+place a gatling scenarion into the directory: $PROJECT_PATH/gatling/user-files/simulations/ . Then you can execute:
+
+$PROJECT_PATH/gatling/bin/gatling.sh -s <scenarioQualifiedName>

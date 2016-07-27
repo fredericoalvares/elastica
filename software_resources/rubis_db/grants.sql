@@ -1,0 +1,2 @@
+CREATE USER 'rubis'@'%' IDENTIFIED BY 'rubis';
+GRANT ALL PRIVILEGES ON rubis.* TO 'rubis'@'%' WITH GRANT OPTION;

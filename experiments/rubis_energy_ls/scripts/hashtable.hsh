@@ -1,0 +1,26 @@
+hget() {
+    eval echo '${'"$1$2"'}'
+}
+
+hput() {
+	eval "$1""$2"='$3'
+	if [ "$1" != "keys" ]
+	then
+		k=`hget keys $1`
+		if [ "$k" = "" ]
+		then
+			k=$2
+		else
+			present=`echo $k| tr '-' '\n' |grep $2`
+			if [ "$present" = "" ]
+			then
+				k="$k"-"$2"
+			fi
+		fi
+		hput keys $1 $k
+	fi
+}
+
+hgetkeys() {
+	echo `hget keys $1` | tr '-' ' '
+}
