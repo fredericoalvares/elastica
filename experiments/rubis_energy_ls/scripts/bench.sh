@@ -266,7 +266,6 @@ do
                 echo "retrieving energy log files from"$nodes
                 $PROJECT_PATH/experiments/rubis_energy_ls/scripts/get_energy_log.sh $start_timestamp $end_timestamp $path_experiment $nodes
 
-                -ro
                 		
 		rm -f /root/action.sh
 		echo "checking if action in progress"
