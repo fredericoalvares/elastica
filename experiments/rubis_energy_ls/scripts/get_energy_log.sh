@@ -29,6 +29,8 @@ START_LOG_TIME=$1
 END_LOG_TIME=$2
 OUTPUT_LOG_PATH=$3
 
+echo $0 $@
+
 shift 3
 
 SYEAR=$(date -d @$START_LOG_TIME +%Y)
@@ -45,18 +47,18 @@ EHOUR=$(date -d @$END_LOG_TIME +%H)
 EMINUTE=$(date -d @$END_LOG_TIME +%M)
 ESECOND=$(date -d @$END_LOG_TIME +%S)
 
+nodes=$(echo "$@" | sed -e 's/\.lyon\.grid5000\.fr//g')
 
-
-echo "nodes : " $@
+echo "nodes : " $nodes
 
 i=0
 node_params=
-for node in "$@"
+for node in $nodes
 do
   node_params=$node_params"&node[$i]=$node"
   i=`expr $i + 1`
 done
-
+echo $node_params
 WATTMETER_URL="https://intranet.grid5000.fr/supervision/lyon/wattmetre"
 
 export https_proxy='http://proxy:3128'
@@ -69,16 +71,16 @@ curl -u $G5K_USER:$G5K_PWD -d "start-year=${SYEAR}&start-month=${SMONTH}&start-d
 
 rm $OUTPUT_LOG_PATH/*.watt.log
 
-for node in $@
+for node in $nodes
 do
-  LOG_PATH=$(sed -n "s/.*href\=\"\.\(\/userlogs.*$node.dat\)\".*$/\1/p" $OUTPUT_LOG_PATH/tmp_html)
-  wget --http-user=$G5K_USER --http-passwor=$G5K_PWD $WATTMETER_URL/$LOG_PATH -O $OUTPUT_LOG_PATH/$node.watt.log
+   LOG_PATH=$(sed -n "s/.*href\=\"\.\(\/userlogs.*$node.dat\)\".*$/\1/p" $OUTPUT_LOG_PATH/tmp_html)
+   echo $LOG_PATH
+   wget --http-user=$G5K_USER --http-password=$G5K_PWD $WATTMETER_URL/$LOG_PATH -O $OUTPUT_LOG_PATH/$node.watt.log
 done
-
+#
 unset http_proxy
 unset https_proxy
 
-#awk 'FNR==NR{a[$1]=$3;next} {print $0" "a[$1]}' $OUTPUT_LOG_PATH/*.watt.log > $OUTPUT_LOG_PATH/energy.log
 
 rm $OUTPUT_LOG_PATH/tmp_html
 

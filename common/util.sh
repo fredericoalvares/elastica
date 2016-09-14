@@ -57,13 +57,14 @@ export LB_PORT=8080
 export WORKER_PORT=8080
 
 #periode a laquelle on log le system d'une vm en seconde
-export PERIODE_LOG_SYSTEM=20
+export PERIODE_LOG_SYSTEM=5
 
 #periode a laquelle on log le nginx en seconde
 export PERIODE_LOG_LB=20
 
 
 export FILE_LOG_SYSTEM=$DEFAULT_LOCAL_CONF_PATH/system.log
+export FILE_LOG_SYSTEM2=$DEFAULT_LOCAL_CONF_PATH/system2.log
 export FILE_LOG_NGINX=$DEFAULT_LOCAL_CONF_PATH/access_nginx.log
 export FILE_LOG_LB=$DEFAULT_LOCAL_CONF_PATH/nginx_report.log
 export ADRESSE_IP_SERVER_REDIS=10.0.0.1
@@ -78,7 +79,7 @@ export NGINX_RECORDS_TO_READ=100
 export FLAVOR_ID=2
 export LB_FLAVOR_ID=2
 #nombre d'instance par défaut
-export NUMBER_INSTANCES=2
+export NUMBER_INSTANCES=3
 
 
 #export NUMBER_APPLICATIONS=2
@@ -91,7 +92,7 @@ export LOGSTASH_FLUSH_PERIOD2=20
 
 
 export LEVELS="0 1 2"
-export DEFAULT_LEVEL="0"
+export DEFAULT_LEVEL="2"
 export LEVEL_FILE="$DEFAULT_LOCAL_CONF_PATH/elasticity.param"
 
 export TIER_LIST_PATH=/tmp

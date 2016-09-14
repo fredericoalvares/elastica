@@ -56,7 +56,7 @@ fi
 
 name_tmpvm=basic_tmp
 
-nova boot --nic net-id=$(neutron net-show -c id -f value private) --flavor 2 --security_groups $sec_group --image "Ubuntu 12.04"  --key_name $key --poll $name_tmpvm
+nova boot --nic net-id=$(neutron net-show -c id -f value private) --flavor 2 --security-groups $sec_group --image "Ubuntu 12.04"  --key-name $key --poll $name_tmpvm
 
 #ip_adress=`nova list | grep "$name_tmpvm" | tr '|' ' '| tr -s ' '| cut -d ' ' -f7 | cut -d '=' -f2`
 
@@ -112,4 +112,26 @@ nova image-create --poll $name_tmpvm $name_image
 
 
 #on efface la machine temporaire
-nova delete $name_tmpvm
+
+check=0
+counter=0
+while [ $check -ne 1 ]
+do
+    nova delete $name_tmpvm
+    sleep 5
+    deleted=$(nova list | grep $name_tmpvm)
+    if [ -z "$deleted" ]
+    then 
+       check=1
+    else 
+       if [ $counter -gt 3 ]
+       then
+          echo "Error:  tried to delete VM 3 times with no success!"
+          exit 0   
+       else
+	  nova reset-state $name_tmpvm
+          counter=`expr $counter + 1`
+       fi
+    fi
+done
+

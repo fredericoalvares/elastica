@@ -17,7 +17,7 @@ do
 	mem=`bc -l <<< "( $used_mem/$total_mem ) * 100" | cut -c 1-4`
 	cpu_idle=`top -b -n 1 | head -3 | tail -1 | tr -s ' ' | cut -d ' ' -f 5 | cut -d '%' -f1`
 	cpu=`bc -l <<< "100 - $cpu_idle"`
-	echo "{\"timestamp\":"$timestamp",\"host_name":"$hname",\"ip\":\""$host_ip"\",\"cpu\":"$cpu",\"mem\":"$mem"}" >> $FILE_LOG_SYSTEM
+	echo "{\"timestamp\":"$timestamp",\"host_name\":"$hname",\"ip\":\""$host_ip"\",\"cpu\":"$cpu",\"mem\":"$mem"}" >> $FILE_LOG_SYSTEM
 	sleep $PERIODE_LOG_SYSTEM
 
 

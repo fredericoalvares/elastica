@@ -18,7 +18,7 @@ class fifa extends Simulation {
 
   val scn = scenario("RubisScenario") // A scenario is a chain of requests and pauses
     .exec(http("homepage1")
-      .get("/index1.php"))
+      .get("/index.html"))
 	.exec(http("browseitem")
       .get("/BrowseCategories.php"))
     .exec(http("ViewItem")

@@ -7,9 +7,6 @@ thr_1=5.0
 thr_2=15.0
 
 #Read the file
-oldR0=$(cat "$recZeroFile")
-oldR1=$(cat "$recOneFile")
-oldR2=$(cat "$recTwoFile")
 
 timestamp=$1 
 metric=$2
@@ -21,27 +18,18 @@ if [ "$metric" = "energy" ]
 then
   if [ `bc -l <<<"$thr_1 > $val"` -eq 1 ]
   then
-        sens="0"      
+        sens="0"
+        echo "No energy!"      
   elif [ `bc -l <<<"$thr_2 < $val"` -eq 1 ]
   then
-	sens="2" 
+	sens="0" 
+        echo "Enough energy!!"
   else
-	sens="1"
+	sens="0"
+        echo "Moderate energy!!"
   fi
   /root/action.sh $sens
  
-       a=$val
-
-            if [ "$a" -e 0 ]
-                then 
-                   echo "No green energy"
-            elif [ "$Thr_1" -ge "$a" ]
-                then  
-                 dimmer=$(bc -l <<<"scale=0; ($a*100)/$thr_1")
-            else
-                 dimmer=$(bc -l <<<"scale=0; ($a*100)/$thr_2")
-            fi
-            
 
 
 fi

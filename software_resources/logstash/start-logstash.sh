@@ -16,7 +16,7 @@ logstash=logstash-1.4.2
 
 #on demare le processus qui log periodiquement
 $DEFAULT_LOCAL_CONF_PATH/collect_system_log.sh &
-
+$DEFAULT_LOCAL_CONF_PATH/collect_vmstat_log.sh &
 #on configure logstash.conf
 
 NOM_DU_TIER=`cat $DEFAULT_LOCAL_CONF_PATH/name_tier.info`

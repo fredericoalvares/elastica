@@ -35,11 +35,13 @@ ssh ubuntu@$ip_adress -i $PATH_KEYPAIR/id_rsa "sudo /bin/su -c \"echo 'fs.file-m
 			       sudo /bin/su -c \"echo 'net.ipv4.tcp_syncookies = 1' >> /etc/sysctl.conf\"; \
                                sudo /bin/su -c \"echo '*    soft     nofile   65536' >> /etc/security/limits.conf\"; \
                                sudo /bin/su -c \"echo '*    hard     nofile   65536' >> /etc/security/limits.conf\"; \
-                                               sudo /bin/su -c \"echo 'session    required   pam_limits.so' >> /etc/pam.d/common-session\"; \
-                                               sudo /bin/su -c \"echo 'session    required   pam_limits.so' >> /etc/pam.d/common-session-noninteractive\"; \
- 					       sudo /bin/su -c \"echo 300000 | sudo tee /proc/sys/fs/nr_open\"; \
-                                  	       sudo /bin/su -c \"echo 300000 | sudo tee /proc/sys/fs/file-max\"; \
-                                               sudo sysctl -p"
+                               sudo /bin/su -c \"echo 'root    soft     nofile   65536' >> /etc/security/limits.conf\"; \
+                               sudo /bin/su -c \"echo 'root    hard     nofile   65536' >> /etc/security/limits.conf\"; \
+                               sudo /bin/su -c \"echo 'session    required   pam_limits.so' >> /etc/pam.d/common-session\"; \
+                               sudo /bin/su -c \"echo 'session    required   pam_limits.so' >> /etc/pam.d/common-session-noninteractive\"; \
+              		       sudo /bin/su -c \"echo 300000 | sudo tee /proc/sys/fs/nr_open\"; \
+                     	       sudo /bin/su -c \"echo 300000 | sudo tee /proc/sys/fs/file-max\"; \
+                               sudo sysctl -p"
 
 #sed "s/@@@PORT@@@/8080/g" $NGINX_TPL | sed "s/@@@WORKERS@@@/$ADDED_SERVERS/g" > $NGINX_CONF
 

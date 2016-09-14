@@ -27,7 +27,27 @@ name_tier=$4
 
 host=$5
 
-
+nova_cmd() {
+   ok=0
+   count=0
+   while [ $ok -eq 0 ]
+   do
+      nova $@
+      rc=$?
+      if [ $rc -eq 0 ]
+      then 
+        ok=1
+      else
+        sleep 3
+        count=`expr $count + 1`
+        if  [ $count -eq 4 ]
+        then 
+           echo "******* ERROR: $0 command has failed more than 3 times ********" 
+	   exit $rc 
+        fi
+      fi
+   done
+}
 
 if [ "$type" = "LB" ]
 then
@@ -44,12 +64,12 @@ else
 fi
 
 
-if [ -z "`nova image-list | grep $name_image`" ]
+if [ -z "`nova_cmd image-list | grep $name_image`" ]
 then
 	#il faut creer l'image disque en question
 	$PROJECT_PATH/apicloud/create_disk_images.sh $type
 fi
-id_image=`nova image-list | grep $name_image | tr '|' ' '| tr -s ' '| cut -d ' ' -f2`
+id_image=`nova_cmd image-list | grep $name_image | tr '|' ' '| tr -s ' '| cut -d ' ' -f2`
 
 #if [ -z "`nova image-list | grep $name_image`" ]
 #then
@@ -67,29 +87,53 @@ then
  host_option=" --availability-zone nova:$host"
 fi
 
-nova boot --nic net-id=$(neutron net-show -c id -f value private) --flavor $flavor --security_groups $sec_group --image $id_image  --key_name $key --poll $name_vm $host_option
-
-
-#nova boot --nic net-id=$netid --flavor $flavor --security_groups $sec_group --image $id_image  --key_name $key --poll $name_vm
-
-ip_adress=$(nova floating-ip-create public |grep public | tr '|' ' '| tr -s ' '| cut -d ' ' -f3)
-
-echo "Attaching $ip_adress to $name_vm"
-nova add-floating-ip $name_vm $ip_adress
 
 #ip_adress=`nova list | grep "$name_vm" | tr '|' ' '| tr -s ' '| cut -d ' ' -f5 | cut -d '=' -f2`
 
-rm -f $HOME/.ssh/known_hosts
-echo -n "trying to connect to $name_vm ($ip_adress)"
-ssh -o "StrictHostKeyChecking no" ubuntu@$ip_adress -i $PATH_KEYPAIR/id_rsa "echo connection succeeded" 2> /dev/null
-ok=$?
-while [ $ok -ne 0 ]
+check=0
+count=0
+while [ $check -ne 1 ] 
 do
-	echo -n "."
-	sleep 3
+    nova_cmd boot --nic net-id=$(neutron net-show -c id -f value private) --flavor $flavor --security-groups $sec_group --image $id_image  --key-name $key --poll $name_vm $host_option
+
+    running=`nova_cmd list | grep "$name_vm" | tr '|' ' '| tr -s ' '| cut -d ' ' -f4`
+
+    if  [ "$running" == "ACTIVE" ]
+    then
+    	ip_adress=$(nova_cmd floating-ip-create public |grep public | tr '|' ' '| tr -s ' '| cut -d ' ' -f3)
+
+	echo "Attaching $ip_adress to $name_vm"
+	nova_cmd add-floating-ip $name_vm $ip_adress
+        
+	rm -f $HOME/.ssh/known_hosts
+	echo -n "trying to connect to $name_vm ($ip_adress)"
 	ssh -o "StrictHostKeyChecking no" ubuntu@$ip_adress -i $PATH_KEYPAIR/id_rsa "echo connection succeeded" 2> /dev/null
 	ok=$?
+	while [ $ok -ne 0 ]
+	do
+    	     echo -n "."
+	     sleep 3
+	     ssh -o "StrictHostKeyChecking no" ubuntu@$ip_adress -i $PATH_KEYPAIR/id_rsa "echo connection succeeded" 2> /dev/null
+	     ok=$?
+	done
+        check=1
+    elif [ -n "$running" ] 
+    then  
+        nova_cmd delete $name_vm 
+    fi
+    
+    ## We retry 5 times 
+    if [ $check -eq 0 ]
+    then  
+        count=`expr $count + 1`
+    	if [ $count -gt 5 ]
+    	then
+    	   exit 0  
+    	fi
+    fi 
 done
+
+
 #il faut spécifier le nom du tier à la machine dans le fichier $DEFAULT_LOCAL_CONF_PATH/name_tier.info
 #ssh -i /tmp/id_rsa ubuntu@$ip_adress "(echo '127.0.0.1 $name_vm' ; cat /etc/hosts) > tmp"
 

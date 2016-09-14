@@ -52,7 +52,7 @@ if [ "$CMD" = "out"  ]; then
    do
       vm_name=$TIER'_VM'$(date +"%s")$i
       echo "Creating $vm_name / flavor "$FLAVOR_ID
-      $PROJECT_PATH/apicloud/new_vm.sh $FLAVOR_ID $vm_name w $TIER $host &
+      $PROJECT_PATH/apicloud/new_vm.sh $FLAVOR_ID $vm_name w $TIER $host #&
       pids[`expr $i - 1`]=$!
       WORKERS=$WORKERS' '$vm_name
    done
@@ -66,9 +66,14 @@ if [ "$CMD" = "out"  ]; then
       #ip_adress=`nova list | grep "$i" | tr '|' ' '| tr -s ' '| cut -d ' ' -f5 | cut -d '=' -f2`
 
       ip_adress=`nova list | grep "$i" | tr '|' ' '| tr -s ' '| cut -d ' ' -f8`
-      
+   
+      private_ip_address=`nova list | grep "$i" | tr '|' ' '| tr -s ' '| cut -d ' ' -f7 | cut -d '=' -f2 | cut -d ',' -f1`
+   
       ssh -o "StrictHostKeyChecking no" ubuntu@$ip_adress -i $PATH_KEYPAIR/id_rsa "sudo /root/w-setup.sh $DB_HOST"
-      ip_addresses=$ip_addresses' '$ip_adress':'$WORKER_PORT
+#      ip_addresses=$ip_addresses' '$ip_adress':'$WORKER_PORT
+     
+      ip_addresses=$ip_addresses' '$private_ip_address':'$WORKER_PORT
+
    done
 
 
@@ -103,7 +108,9 @@ else
        do
         # ip_adress=`nova list | grep "$i" | tr '|' ' '| tr -s ' '| cut -d ' ' -f5 | cut -d '=' -f2`
 
-         ip_adress=`nova list | grep "$i" | tr '|' ' '| tr -s ' '| cut -d ' ' -f8`
+#         ip_adress=`nova list | grep "$i" | tr '|' ' '| tr -s ' '| cut -d ' ' -f8`
+ 
+         ip_adress=`nova list | grep "$i" | tr '|' ' '| tr -s ' '| cut -d ' ' -f7 | cut -d '=' -f2 | cut -d ',' -f1`
          ip_addresses=$ip_addresses' '$ip_adress':'$WORKER_PORT
        done
        echo "{debug} ip_addresses=$ip_addresses"

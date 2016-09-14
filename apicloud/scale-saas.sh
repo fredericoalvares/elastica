@@ -85,7 +85,7 @@ do
    
    if ! [ -z "$next_level" ]
    then
-      echo "Setting quality level to $next_level [worker $w]"
+      echo "Setting quality level to $next_level [worker $w :  $ip_address]"
       ssh -o "StrictHostKeyChecking no" ubuntu@$ip_address -i $PATH_KEYPAIR/id_rsa "sudo echo $next_level > $LEVEL_FILE"
    fi
 done
