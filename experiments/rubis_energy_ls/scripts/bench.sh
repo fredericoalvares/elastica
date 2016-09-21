@@ -6,7 +6,7 @@ PATTERNS_WORKLOAD="wikipedia"
 
 #STRATEGIES="nothing horInfra_vertSoft onlyhorInfra onlyvertSoft"
 #STRATEGIES="horInfra_vertSoft onlyhorInfra onlyvertSoft"
-STRATEGIES="nothing"
+STRATEGIES="nothing onlyvertSoft"
 if ! [ -d /share ] || ! [ -f /root/adminrc ]
 then
 	echo "This script must be executed on the Cloud controller"	
@@ -190,11 +190,11 @@ do
 		#on logue l'etat du systeme avant l'action
 #		echo "log_cloud_state b_\$1" >> /root/action.sh
 		echo "$PROJECT_PATH/experiments/rubis_energy_ls/scripts/getCloudState.sh b_\$1 >> $TMP_FILE_LOG_CLOUD_STATE" >> /root/action.sh
-                for i in `seq 1 $NUMBER_APPLICATIONS`
-		do
+#                for i in `seq 1 $NUMBER_APPLICATIONS`
+#		do
                    #on spécifie la stratégie que lon veut utiliser
-        	   echo "$PROJECT_PATH/apicloud/strategies/$strategy.sh \$1 $name_tier$i" >> /root/action.sh
-		done
+        	   echo "$PROJECT_PATH/apicloud/strategies/$strategy.sh \$1 \$2" >> /root/action.sh
+#		done
 		#on logue l'etat du systeme apres l'action
 #		echo "log_cloud_state e_\$1" >> /root/action.sh
                 echo "$PROJECT_PATH/experiments/rubis_energy_ls/scripts/getCloudState.sh e_\$1 >> $TMP_FILE_LOG_CLOUD_STATE" >> /root/action.sh

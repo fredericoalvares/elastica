@@ -8,13 +8,14 @@ threshold=0.50
 zero=0.00
 distance=10000.00
 distance1=50000.00
-timestamp=$1
-metric=$2
-val=$3
+src=$1
+timestamp=$2
+metric=$3
+val=$4
 
-cloud_state='/share/elasticity_manager/cloud_state.txt'
+cloud_state="/share/elasticity_manager/cloud_state_"$src".txt"
 old_state=$(cat "$cloud_state")
-t='/share/elasticity_manager/tstamp.txt'
+t='/share/elasticity_manager/tstamp_'$src'.txt'
 time_file=$(cat "$t")
 
 if [ "$metric" = "energy" ]
@@ -34,7 +35,7 @@ echo "$next_time" > "$t"
   else
         sens="1"
   fi
-  /root/action.sh $sens
+  /root/action.sh $src $sens
   echo "$sens" > "$cloud_state"
 
 fi
@@ -52,7 +53,7 @@ then
       
 #it should be slot/2, meaning if rt slot is 20 sec each, then distance should be 10 sec, if rt slot 10 sec, dist is 5 sec
 # send workload to file and delete first line
-file1='/share/elasticity_manager/count.txt'
+file1='/share/elasticity_manager/count_'$src'.txt'
 echo "$workload" >> "$file1"
 echo "current workload is $workload"
 value=$(wc -l "$file1")
@@ -91,7 +92,7 @@ echo "stability is $stability"
                   if [ `bc -l <<< "$zero > $func"` -eq 1 ] && [ "$old_state" -ne 0 ] && [ `bc -l <<< "$time_diff > $distance"` -eq 1 ] && [ `bc -l <<< "$time_diff < $distance1"` -eq 1 ]
                      then
                          x=`expr $old_state - $downgrade`
-                            /root/action.sh $x
+                            /root/action.sh $src $x
                          echo "$x" > "$cloud_state"
                          echo "Downgrading User experience due to high response time, current mode $x"
                    fi
