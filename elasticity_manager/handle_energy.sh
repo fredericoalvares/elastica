@@ -1,8 +1,9 @@
 #!/bin/bash
 
 #sert à initier un handler d'event
-metric=$1
-val=$2
+src=$1
+metric=$2
+val=$3
 
 if [ -z "$metric" ]
 then
@@ -14,4 +15,4 @@ then
 	exit 1
 fi
 
-/share/elasticity_manager/handle_eventHyb.sh `date +%s%N | cut -b1-13` $metric $val
+/share/elasticity_manager/handle_eventHyb.sh `date +%s%N | cut -b1-13` $src $metric $val

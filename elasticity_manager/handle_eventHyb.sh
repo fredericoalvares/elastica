@@ -8,8 +8,9 @@ threshold=0.50
 zero=0.00
 distance=10000.00
 distance1=50000.00
-src=$1
-timestamp=$2
+
+timestamp=$1
+src=$2
 metric=$3
 val=$4
 
@@ -35,7 +36,7 @@ echo "$next_time" > "$t"
   else
         sens="1"
   fi
-  /root/action.sh $src $sens
+  /root/action.sh $sens $src 
   echo "$sens" > "$cloud_state"
 
 fi
@@ -92,7 +93,7 @@ echo "stability is $stability"
                   if [ `bc -l <<< "$zero > $func"` -eq 1 ] && [ "$old_state" -ne 0 ] && [ `bc -l <<< "$time_diff > $distance"` -eq 1 ] && [ `bc -l <<< "$time_diff < $distance1"` -eq 1 ]
                      then
                          x=`expr $old_state - $downgrade`
-                            /root/action.sh $src $x
+                            /root/action.sh $x $src
                          echo "$x" > "$cloud_state"
                          echo "Downgrading User experience due to high response time, current mode $x"
                    fi

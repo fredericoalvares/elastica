@@ -1,8 +1,9 @@
 #!/bin/bash
 
 #sert à initier un handler d'event
-metric=$1
-val=$2
+src=$1
+metric=$2
+val=$3
 
 if [ -z "$metric" ]
 then

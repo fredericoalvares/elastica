@@ -109,7 +109,7 @@ erase_plateforme () {
 	    fi
         done
 	echo '#!/bin/bash' > /root/action.sh
-	echo "echo \$0 \$1" >> /root/action.sh
+	echo "echo \$0 \$1 \$2" >> /root/action.sh
 	echo "source $PROJECT_PATH/common/util.sh" >> /root/action.sh
 	chmod +x /root/action.sh	
 	
@@ -198,13 +198,14 @@ do
 		#on logue l'etat du systeme apres l'action
 #		echo "log_cloud_state e_\$1" >> /root/action.sh
                 echo "$PROJECT_PATH/experiments/rubis_energy_ls/scripts/getCloudState.sh e_\$1 >> $TMP_FILE_LOG_CLOUD_STATE" >> /root/action.sh
-
+                tiers=
 		for i in `seq 1 $NUMBER_APPLICATIONS`
 		do
 		#   ADRESS_IP_LB=`nova list | grep $name_tier$i"_VM_LB" | tr "|" " " |tr -s " " | cut -d ' ' -f5 | cut -d "=" -f2`
 		   ADRESS_IP_LB=`nova list | grep $name_tier$i"_VM_LB" | tr "|" " " |tr -s " " | cut -d ' ' -f8`
 		   while ! curl $ADRESS_IP_LB:$LB_PORT ; do echo "has done curl $ADRESS_IP_LB:$LB_PORT" ; sleep 1 ; done
 		   lb_addresses[`expr $i - 1`]=$ADRESS_IP_LB
+                   tiers=$tiers' '$name_tier$i
 #		   export JAVA_OPTS="-DlbURL=http://$ADRESS_IP_LB:$LB_PORT"
                 done
 
@@ -216,7 +217,7 @@ do
                 start_timestamp=$(date +%s)		
 
 		#launch the green energy availability file reader
-	        $PROJECT_PATH/experiments/rubis_energy_ls/scripts/green_energy_availability.sh $PROJECT_PATH/experiments/rubis_energy_ls/scripts/green_energy_availability.txt 60  &
+	        $PROJECT_PATH/experiments/rubis_energy_ls/scripts/green_energy_availability.sh $PROJECT_PATH/experiments/rubis_energy_ls/scripts/green_energy_availability.txt 60 $tiers &
 
                 GREEN_AVAILABILITY_PID=$! 
 
