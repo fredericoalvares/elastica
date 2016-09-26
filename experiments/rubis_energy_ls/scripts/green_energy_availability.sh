@@ -8,10 +8,18 @@ TIERS=$@
 for line in $(cat $AVAILABLE_ENERGY_FILE); do
         sleep $SLEEP_TIME
 	value=$line 
-	for tier in $TIERS
+        i=0
+        for tier in $TIERS
         do
-	   /share/elasticity_manager/handle_energy.sh $tier energy $line	
+           /share/elasticity_manager/handle_energy.sh $tier energy $line &
+         pids[$i]=$!
+         i=`expr $i + 1`
         done
+        for pid in ${pids[*]}
+        do
+           wait $pid
+        done
+
 done
 
 # < $AVAILABLE_ENERGY_FILE
