@@ -15,7 +15,7 @@ logstash=logstash-1.4.2
 
 #on copie les fichiers logstash dans un autre dossier (le nfs est en lecture seule)
 scp -i $PATH_KEYPAIR/id_rsa  $directory/*.* ubuntu@$ip_adress:$DEFAULT_LOCAL_CONF_PATH/ 
-ssh ubuntu@$ip_adress -i $PATH_KEYPAIR/id_rsa "sudo tar xvzf $DEFAULT_LOCAL_CONF_PATH/$logstash.tar.gz" # && sudo cp -r $logstash ~/"
+ssh ubuntu@$ip_adress -i $PATH_KEYPAIR/id_rsa "sudo tar xvzf $DEFAULT_LOCAL_CONF_PATH/$logstash.tar.gz -C $DEFAULT_LOCAL_CONF_PATH"  # && sudo cp -r $logstash ~/"
 
 rm -f /tmp/commandes
 
