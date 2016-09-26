@@ -6,7 +6,7 @@ PATTERNS_WORKLOAD="wikipedia"
 
 #STRATEGIES="nothing horInfra_vertSoft onlyhorInfra onlyvertSoft"
 #STRATEGIES="horInfra_vertSoft onlyhorInfra onlyvertSoft"
-STRATEGIES="nothing onlyvertSoft"
+STRATEGIES="onlyvertSoft"
 if ! [ -d /share ] || ! [ -f /root/adminrc ]
 then
 	echo "This script must be executed on the Cloud controller"	
@@ -135,6 +135,15 @@ init_plateforme () {
       echo $DB_IP_ADDRESS > $DB_INFO_FILE
       echo "Scaling $name_tier$i on host "${nodes_array[$i]}
       $PROJECT_PATH/apicloud/scale-iaas.sh out $name_tier$i ${nodes_array[$i]} #&
+        
+      echo "0" > "/share/elasticity_manager/cloud_state_"$name_tier$i".txt"
+      echo "0" > "/share/elasticity_manager/tstamp_"$name_tier$i".txt"
+      
+      file_count='/share/elasticity_manager/count_'$name_tier$i'.txt' 
+      echo "0" > $file_count
+      echo "0" >> $file_count
+      echo "0" >> $file_count
+      echo "0" >> $file_count
       pids[`expr $i - 1`]=$! 
     done
     for i in `seq 1 $NUMBER_APPLICATIONS`
