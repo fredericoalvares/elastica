@@ -19,6 +19,7 @@ sudo tar xvzf /root/$redis.tar.gz && sudo cp -r $redis /root/
 #on build redis
 
 cd /root/$redis
+make distclean
 make
 cd /root
 

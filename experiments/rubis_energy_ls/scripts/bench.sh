@@ -332,6 +332,6 @@ done
 if [ -d $PATH_RESULT_BENCH ]
 then 
     TAR_PATH_RESULTS=$PATH_RESULTS/$NAME_BENCH'.tar.gz'
-    tar -zcvf $TAR_PATH_RESULTS $PATH_RESULT_BENCH
+    tar cvf $TAR_PATH_RESULTS -C $PATH_RESULTS $NAME_BENCH
     scp -o "StrictHostKeyChecking no" -i /tmp/id_rsa -r $TAR_PATH_RESULTS $G5K_USER@frontend.lyon:~/results/
 fi
