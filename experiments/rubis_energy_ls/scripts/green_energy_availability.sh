@@ -5,9 +5,10 @@ shift
 shift
 TIERS=$@
 
+sleep $SLEEP_TIME
 for line in $(cat $AVAILABLE_ENERGY_FILE); do
-        sleep $SLEEP_TIME
-	value=$line 
+	start=$(date +%s)
+        value=$line 
         i=0
         for tier in $TIERS
         do
@@ -19,7 +20,12 @@ for line in $(cat $AVAILABLE_ENERGY_FILE); do
         do
            wait $pid
         done
-
+        diff=`expr $(date +%s) - $start`
+        remaining=`expr $SLEEP_TIME - $diff`
+        if [ $remaining -gt 0 ]
+        then 
+	   sleep $remaining
+        fi
 done
 
 # < $AVAILABLE_ENERGY_FILE
