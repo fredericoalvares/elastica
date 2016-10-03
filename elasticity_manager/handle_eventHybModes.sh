@@ -8,18 +8,22 @@ threshold=0.50
 zero=0.00
 
 timestamp=$1
-metric=$2
-val=$3
+src=$2
+metric=$3
+val=$4
 
-cloud_state='/share/elasticity_manager/cloud_state.txt'
+distance=10000.00
+distance1=50000.00
+
+cloud_state='/share/elasticity_manager/cloud_state_'$src'.txt'
 old_state=$(cat "$cloud_state")
-t='/share/elasticity_manager/tstamp.txt'
+t='/share/elasticity_manager/tstamp_'$src'.txt'
 time_file=$(cat "$t")
 
 # The files where the no of request associated with modes will be stored
-recZeroFile='/share/elasticity_manager/r0.txt'
-recOneFile='/share/elasticity_manager/r1.txt'
-recTwoFile='/share/elasticity_manager/r2.txt'
+recZeroFile='/share/elasticity_manager/r0_'$src'.txt'
+recOneFile='/share/elasticity_manager/r1_'$src'.txt'
+recTwoFile='/share/elasticity_manager/r2_'$src'.txt'
 
 # SLA target for recommendation, depending what we put here!
 rec1=50
@@ -85,7 +89,7 @@ else
  sens="0"
 
 fi
-    /root/action.sh $sens
+    /root/action.sh $sens $src
      echo "$sens" > "$cloud_state"
 echo "Perc rec1 $per1 % and Perc rec2 $per2 %, distance for rec1 $temp1% and distance for rec2 is $temp2% " >> /share/elasticity_manager/SLA.txt
 
@@ -102,9 +106,9 @@ then
        rt_time=$timestamp
        time_diff=`expr $time_file - $rt_time`
        echo "$time_diff"
-       distance=15000.00 #it should be slot/2, meaning if rt slot is 20 sec each, then distance should be 10 sec, if rt slot 10 sec, dist is 5 sec
+#       distance=15000.00 #it should be slot/2, meaning if rt slot is 20 sec each, then distance should be 10 sec, if rt slot 10 sec, dist is 5 sec
 # send workload to file and delete first line
-file1='/share/elasticity_manager/count.txt'
+file1='/share/elasticity_manager/count_'$src'.txt'
 echo "$workload" >> "$file1"
 echo "current workload is $workload"
 value=$(wc -l "$file1")
@@ -140,10 +144,11 @@ echo "stability is $stability"
        echo "value of f(t) is $func"
 
   
-                  if [ `bc -l <<< "$zero > $func"` -eq 1 ] && [ "$old_state" -ne 0 ] && [ `bc -l <<< "$time_diff > $distance"` -eq 1 ]
-                     then
+#                  if [ `bc -l <<< "$zero > $func"` -eq 1 ] && [ "$old_state" -ne 0 ] && [ `bc -l <<< "$time_diff > $distance"` -eq 1 ]
+                   if [ `bc -l <<< "$zero > $func"` -eq 1 ] && [ "$old_state" -ne 0 ] && [ `bc -l <<< "$time_diff > $distance"` -eq 1 ] && [ `bc -l <<< "$time_diff < $distance1"` -eq 1 ]                     
+                   then
                          x=`expr $old_state - $downgrade`
-                            /root/action.sh $x
+                            /root/action.sh $x $src
                          echo "$x" > "$cloud_state"
                          echo "Downgrading User experience due to high response time, current mode $x"
                    fi

@@ -15,4 +15,4 @@ then
 	exit 1
 fi
 
-/share/elasticity_manager/handle_eventHyb.sh `date +%s%N | cut -b1-13` $src $metric $val
+/share/elasticity_manager/handle_eventHybModes.sh `date +%s%N | cut -b1-13` $src $metric $val

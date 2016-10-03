@@ -15,9 +15,9 @@ then
 	exit 1
 fi
 #
-IFS=':' read -a counter <<< "$val"
+#IFS=':' read -a counter <<< "$val"
 
-echo "No mode: ${counter[0]} | Mode 0: ${counter[1]} | Mode 1: ${counter[2]} | Mode 2: ${counter[3]}" >> /share/elasticity_manager/rt_wiki_SLA.txt
+#echo "No mode: ${counter[0]} | Mode 0: ${counter[1]} | Mode 1: ${counter[2]} | Mode 2: ${counter[3]}" >> /share/elasticity_manager/rt_wiki_SLA.txt
 
 
 #  ### HERE YOU SHOULD PUT YOUR CONDITIONS/CONSTRAINTS BASED ON THE SLA
@@ -53,4 +53,4 @@ echo "No mode: ${counter[0]} | Mode 0: ${counter[1]} | Mode 1: ${counter[2]} | M
 #
 #echo "Perc rec1 $per1 % and Perc rec2 $per2 % " >> /share/elasticity_manager/rt_wiki_SLA.txt
 
-#/share/elasticity_manager/exp.sh `date +%s%N | cut -b1-13` $metric $val
+/share/elasticity_manager/handle_eventHybModes.sh `date +%s%N | cut -b1-13` $src $metric $val

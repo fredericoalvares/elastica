@@ -144,6 +144,11 @@ init_plateforme () {
       echo "0" >> $file_count
       echo "0" >> $file_count
       echo "0" >> $file_count
+
+      echo "0" > '/share/elasticity_manager/r0_'$name_tier$i'.txt'
+      echo "0" > '/share/elasticity_manager/r1_'$name_tier$i'.txt'
+      echo "0" > '/share/elasticity_manager/r2_'$name_tier$i'.txt'
+
       pids[`expr $i - 1`]=$! 
     done
     for i in `seq 1 $NUMBER_APPLICATIONS`
@@ -181,10 +186,15 @@ do
 		#on créé le répertoire de resultats de bench
 		mkdir $path_experiment
 		
-		rm -f $TMP_FILE_LOG_CLOUD_STATE
-		touch $TMP_FILE_LOG_CLOUD_STATE
+		rm -f $TMP_FILE_LOG_CLOUD_STATE"*"
+#		touch $TMP_FILE_LOG_CLOUD_STATE
 	
-              	#on supprime la plateforme actuelle 
+		for i in `seq 1 $NUMBER_APPLICATIONS`
+              	do
+ 		      touch $TMP_FILE_LOG_CLOUD_STATE"_"$name_tier$i
+                done
+
+		#on supprime la plateforme actuelle 
 		erase_plateforme	
 				
 		#on réinitialise la plateforme : par defaut un seul worker
@@ -198,7 +208,7 @@ do
 		
 		#on logue l'etat du systeme avant l'action
 #		echo "log_cloud_state b_\$1" >> /root/action.sh
-		echo "$PROJECT_PATH/experiments/rubis_energy_ls/scripts/getCloudState.sh b_\$1 >> $TMP_FILE_LOG_CLOUD_STATE" >> /root/action.sh
+		echo "$PROJECT_PATH/experiments/rubis_energy_ls/scripts/getCloudState.sh b_\$1 >> $TMP_FILE_LOG_CLOUD_STATE\"_\"\$2" >> /root/action.sh
 #                for i in `seq 1 $NUMBER_APPLICATIONS`
 #		do
                    #on spécifie la stratégie que lon veut utiliser
@@ -206,7 +216,7 @@ do
 #		done
 		#on logue l'etat du systeme apres l'action
 #		echo "log_cloud_state e_\$1" >> /root/action.sh
-                echo "$PROJECT_PATH/experiments/rubis_energy_ls/scripts/getCloudState.sh e_\$1 >> $TMP_FILE_LOG_CLOUD_STATE" >> /root/action.sh
+                echo "$PROJECT_PATH/experiments/rubis_energy_ls/scripts/getCloudState.sh e_\$1 >> $TMP_FILE_LOG_CLOUD_STATE\"_\"\$2" >> /root/action.sh
                 tiers=
 		for i in `seq 1 $NUMBER_APPLICATIONS`
 		do
@@ -226,9 +236,9 @@ do
                 start_timestamp=$(date +%s)		
 
 		#launch the green energy availability file reader
-	        $PROJECT_PATH/experiments/rubis_energy_ls/scripts/green_energy_availability.sh $PROJECT_PATH/experiments/rubis_energy_ls/scripts/green_energy_availability.txt 60 $tiers &
+	       # $PROJECT_PATH/experiments/rubis_energy_ls/scripts/green_energy_availability.sh $PROJECT_PATH/experiments/rubis_energy_ls/scripts/green_energy_availability.txt 60 $tiers &
 
-                GREEN_AVAILABILITY_PID=$! 
+             #   GREEN_AVAILABILITY_PID=$! 
 
  	
                 #launch experiment
@@ -268,7 +278,8 @@ do
 		kill $LOGSTASH_PID
 
 		#on sauvegarde les donnée liées à létat de la plateforme
-		cp $TMP_FILE_LOG_CLOUD_STATE $path_experiment/state_plateforme.log
+		cp ${TMP_FILE_LOG_CLOUD_STATE}"*" $path_experiment/
+#state_plateforme.log
 		
 		#on sauvegarde les données liées à gatling (temps de réponse)	
 	#	mv $PROJECT_PATH/gatling/results/* $path_experiment/
