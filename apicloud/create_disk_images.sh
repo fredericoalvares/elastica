@@ -19,7 +19,7 @@ cd $PROJECT_PATH
 
 source $PROJECT_PATH/common/util.sh
 
-usage="$0 <LB|w|db>"
+usage="$0 <LB|w|db|lamp>"
 
 if [ $# -ne 1 ]
 then
@@ -44,7 +44,12 @@ elif [ "$type" = "db" ]
 then
 	soft_to_install="mysql rubis_db logstash"
         name_image=$name_image_DB
+elif [ "$type" = "lamp" ]
+then
+	soft_to_install="mysql rubis_db php rubis java logstash"
+        name_image=$name_image_LAMP
 fi
+
 
 
 if [ "`nova image-list | grep $name_image`" != "" ]

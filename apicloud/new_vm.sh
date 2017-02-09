@@ -58,6 +58,9 @@ then
 elif [ "$type" = "db" ]
 then	
 	name_image=$name_image_DB	
+elif [ "$type" = "lamp" ]
+then	
+	name_image=$name_image_LAMP
 else
 	echo $usage
 	exit 2

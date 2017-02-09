@@ -1,3 +1,4 @@
+
 threshold_energy1=5.0
 threshold_energy2=15.0
 response_time=1.00
@@ -96,6 +97,23 @@ echo "stability is $stability"
                             /root/action.sh $x $src
                          echo "$x" > "$cloud_state"
                          echo "Downgrading User experience due to high response time, current mode $x"
+                         
+                         currentTime=$(date +%s)
+                         /share/elasticity_manager/iaas_controller.sh $currentTime $src add $current_rt $work_inc
+                         echo "Adding VM request send to iaaS Controller"
+                         
+                         
+                   elif  [ `bc -l <<< "$zero < $func"` -eq 1 ] && [ "$old_state" -ne 0 ] && [ `bc -l <<< "$time_diff > $distance"` -eq 1 ] && [ `bc -l <<< "$time_diff < $distance1"` -eq 1 ]      
+                      
+                        currentTime=$(date +%s)
+                         /share/elasticity_manager/iaas_controller.sh $currentTime $src remove $current_rt $work_inc
+                         echo "Removing VM request send to iaaS Controller"
+                         
+                  else
+                  
+                         echo "No request send to iaaS Controller"
+                   
+                   
                    fi
           fi
 fi    

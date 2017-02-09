@@ -7,8 +7,9 @@ threshold=0.50
 zero=0.00
 
 timestamp=$1
-metric=$2
-val=$3
+src=$2
+metric=$3
+val=$4
 file='/share/elasticity_manager/array.txt'
 echo "handle_event debut : $timestamp $metric $val"
 
@@ -60,7 +61,7 @@ echo "stability is $stability"
                    sens="2"
                    echo "Selecting mode $sens because Response time is super low!"
                    currentTime=$(date +%s)
-                         /share/elasticity_manager/iaas_controller.sh $currentTime remove $current_rt $work_inc
+                         /share/elasticity_manager/iaas_controller.sh $currentTime $src remove $current_rt $work_inc 
                          echo "Removing VM request send to iaaS Controller"
                          
              elif [ `bc -l <<<"$zero > $func"` -eq 1 ]
@@ -68,14 +69,14 @@ echo "stability is $stability"
                    sens="0"
                    echo "Selecting mode $sens because Response time is high!"
                    currentTime=$(date +%s)
-                         /share/elasticity_manager/iaas_controller.sh $currentTime add $current_rt $work_inc
+                         /share/elasticity_manager/iaas_controller.sh $currentTime $src add $current_rt $work_inc
                          echo "Adding VM request send to iaaS Controller"
              else
                    sens="1"
                    echo "Selecting mode $sens because Response time is in good region"
                 
           fi
-             /root/action.sh $sens
+             /root/action.sh $sens $src
     fi
 fi
 #elif [ "$metric" = "modes" ]

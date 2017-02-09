@@ -19,6 +19,7 @@ export sec_group="sec_group"
 export name_image_LB="LoadBalancerImage"
 export name_image_worker="WorkerImage"
 export name_image_DB="DatabaseImage"
+export name_image_LAMP="LampImage"
 
 #doit etre executer en root au demarage d'une vm
 export script_start_services="/root/start-services.sh" 
@@ -76,10 +77,10 @@ export ADRESSE_IP_SERVER_REDIS=10.0.0.1
 export NGINX_RECORDS_TO_READ=100
 
 
-export FLAVOR_ID=2
-export LB_FLAVOR_ID=2
+export FLAVOR_ID=4
+export LB_FLAVOR_ID=4
 #nombre d'instance par défaut
-export NUMBER_INSTANCES=3
+export NUMBER_INSTANCES=1
 
 
 #export NUMBER_APPLICATIONS=2

@@ -6,7 +6,7 @@ PATTERNS_WORKLOAD="wikipedia"
 
 #STRATEGIES="nothing horInfra_vertSoft onlyhorInfra onlyvertSoft"
 #STRATEGIES="horInfra_vertSoft onlyhorInfra onlyvertSoft"
-STRATEGIES="onlyvertSoft"
+STRATEGIES="hybrid"
 if ! [ -d /share ] || ! [ -f /root/adminrc ]
 then
 	echo "This script must be executed on the Cloud controller"	
@@ -28,7 +28,7 @@ fi
 #G5K_PWD=$(cat $G5K_PWD_PATH | base64 --decode)
 G5K_USER=$(cat $G5K_USER_PATH)
 
-PATH_RESULTS=$PROJECT_PATH/experiments/rubis_energy_ls/results
+PATH_RESULTS=$PROJECT_PATH/experiments/rubis_energy_iaas/results
 
 NAME_BENCH=bench_`date +%s`
 
@@ -116,25 +116,31 @@ erase_plateforme () {
 }
 
 init_plateforme () {
-    for i in `seq 1 $NUMBER_APPLICATIONS`
-    do
-      echo "Launching DB on host "${nodes_array[$i]}
-      $PROJECT_PATH/apicloud/new_vm.sh 5 db-rubis$i db dbtier$i ${nodes_array[$i]} #&
+#    for i in `seq 1 $NUMBER_APPLICATIONS`
+#    do
+#      echo "Launching DB on host "${nodes_array[$i]}
+#      $PROJECT_PATH/apicloud/new_vm.sh 5 db-rubis$i db dbtier$i ${nodes_array[$i]} #&
 #      DB_IP_ADDRESS=`nova list | grep dbtier$i | tr "|" " " |tr -s " " | cut -d ' ' -f5 | cut -d "=" -f2`
-      pids[`expr $i - 1`]=$! 
-    done
-    for i in `seq 1 $NUMBER_APPLICATIONS`
-    do
-       wait ${pids[`expr $i - 1`]}
-    done
+#      pids[`expr $i - 1`]=$! 
+#    done
+#    for i in `seq 1 $NUMBER_APPLICATIONS`
+#    do
+#       wait ${pids[`expr $i - 1`]}
+#    done
+    
+    echo "0" > '/share/elasticity_manager/cold_period_add.txt'
+    echo "0" > '/share/elasticity_manager/cold_period_remove.txt'
+    echo "1" > '/share/elasticity_manager/instance_number.txt'
+
+    
     for i in `seq 1 $NUMBER_APPLICATIONS`
     do
      # DB_IP_ADDRESS=`nova list | grep db-rubis$i | tr "|" " " |tr -s " " | cut -d ' ' -f8`
       # take private ip instead
-      DB_IP_ADDRESS=`nova list | grep db-rubis$i | tr "|" " " |tr -s " " | cut -d ' ' -f7 | cut -d '=' -f2 | cut -d ',' -f1`
-      echo $DB_IP_ADDRESS > $DB_INFO_FILE
+#      DB_IP_ADDRESS=`nova list | grep db-rubis$i | tr "|" " " |tr -s " " | cut -d ' ' -f7 | cut -d '=' -f2 | cut -d ',' -f1`
+#      echo $DB_IP_ADDRESS > $DB_INFO_FILE
       echo "Scaling $name_tier$i on host "${nodes_array[$i]}
-      $PROJECT_PATH/apicloud/scale-iaas.sh out $name_tier$i ${nodes_array[$i]} #&
+      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i ${nodes_array[$i]} #&
         
       echo "0" > "/share/elasticity_manager/cloud_state_"$name_tier$i".txt"
       echo "0" > "/share/elasticity_manager/tstamp_"$name_tier$i".txt"
@@ -208,7 +214,7 @@ do
 		
 		#on logue l'etat du systeme avant l'action
 #		echo "log_cloud_state b_\$1" >> /root/action.sh
-		echo "$PROJECT_PATH/experiments/rubis_energy_ls/scripts/getCloudState.sh b_\$1 >> $TMP_FILE_LOG_CLOUD_STATE\"_\"\$2" >> /root/action.sh
+		echo "$PROJECT_PATH/experiments/rubis_energy_iaas/scripts/getCloudState.sh b_\$1 >> $TMP_FILE_LOG_CLOUD_STATE\"_\"\$2" >> /root/action.sh
 #                for i in `seq 1 $NUMBER_APPLICATIONS`
 #		do
                    #on spécifie la stratégie que lon veut utiliser
@@ -216,7 +222,7 @@ do
 #		done
 		#on logue l'etat du systeme apres l'action
 #		echo "log_cloud_state e_\$1" >> /root/action.sh
-                echo "$PROJECT_PATH/experiments/rubis_energy_ls/scripts/getCloudState.sh e_\$1 >> $TMP_FILE_LOG_CLOUD_STATE\"_\"\$2" >> /root/action.sh
+                echo "$PROJECT_PATH/experiments/rubis_energy_iaas/scripts/getCloudState.sh e_\$1 >> $TMP_FILE_LOG_CLOUD_STATE\"_\"\$2" >> /root/action.sh
                 tiers=
 		for i in `seq 1 $NUMBER_APPLICATIONS`
 		do
@@ -278,7 +284,7 @@ do
 		kill $LOGSTASH_PID
 
 		#on sauvegarde les donnée liées à létat de la plateforme
-		cp ${TMP_FILE_LOG_CLOUD_STATE}* $path_experiment/
+		cp ${TMP_FILE_LOG_CLOUD_STATE}"*" $path_experiment/
 #state_plateforme.log
 		
 		#on sauvegarde les données liées à gatling (temps de réponse)	
