@@ -43,10 +43,10 @@ then
 	$PROJECT_PATH/apicloud/scale-saas.sh up $TIER
 elif [ "$sens" = "out" ]
 then
-	$PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $TIER
+	$PROJECT_PATH/apicloud/scale-iaas-lamp2.sh out $TIER
 elif [ "$sens" = "in" ]
 then
-	$PROJECT_PATH/apicloud/scale-iaas-lamp.sh $sens $TIER
+	$PROJECT_PATH/apicloud/scale-iaas-lamp2.sh $sens $TIER
 elif [[ $sens =~ $re ]]; then
 	$PROJECT_PATH/apicloud/scale-saas.sh $sens $TIER
 fi

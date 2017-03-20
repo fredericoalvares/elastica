@@ -140,8 +140,20 @@ init_plateforme () {
 #      DB_IP_ADDRESS=`nova list | grep db-rubis$i | tr "|" " " |tr -s " " | cut -d ' ' -f7 | cut -d '=' -f2 | cut -d ',' -f1`
 #      echo $DB_IP_ADDRESS > $DB_INFO_FILE
       echo "Scaling $name_tier$i on host "${nodes_array[$i]}
-      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i ${nodes_array[$i]} #&
-        
+      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i ${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i ${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i ${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i ${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i ${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i ${nodes_array[$i]} 
+
+      $PROJECT_PATH/apicloud/scale-iaas-lamp2.sh "in" $name_tier$i ${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp2.sh "in" $name_tier$i ${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp2.sh "in" $name_tier$i ${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp2.sh "in" $name_tier$i ${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp2.sh "in" $name_tier$i ${nodes_array[$i]} 
+
+
       echo "0" > "/share/elasticity_manager/cloud_state_"$name_tier$i".txt"
       echo "0" > "/share/elasticity_manager/tstamp_"$name_tier$i".txt"
       
@@ -155,6 +167,8 @@ init_plateforme () {
       echo "0" > '/share/elasticity_manager/r1_'$name_tier$i'.txt'
       echo "0" > '/share/elasticity_manager/r2_'$name_tier$i'.txt'
 
+      cat /dev/null  > '/share/elasticity_manager/yet_another_log.txt'
+     
       pids[`expr $i - 1`]=$! 
     done
     for i in `seq 1 $NUMBER_APPLICATIONS`
@@ -214,7 +228,7 @@ do
 		
 		#on logue l'etat du systeme avant l'action
 #		echo "log_cloud_state b_\$1" >> /root/action.sh
-		echo "$PROJECT_PATH/experiments/rubis_energy_iaas/scripts/getCloudState.sh b_\$1 >> $TMP_FILE_LOG_CLOUD_STATE\"_\"\$2" >> /root/action.sh
+		echo "$PROJECT_PATH/experiments/rubis_energy_iaas/scripts/getCloudState.sh b_\$1 \$2 >> $TMP_FILE_LOG_CLOUD_STATE\"_\"\$2" >> /root/action.sh
 #                for i in `seq 1 $NUMBER_APPLICATIONS`
 #		do
                    #on spécifie la stratégie que lon veut utiliser
@@ -222,7 +236,7 @@ do
 #		done
 		#on logue l'etat du systeme apres l'action
 #		echo "log_cloud_state e_\$1" >> /root/action.sh
-                echo "$PROJECT_PATH/experiments/rubis_energy_iaas/scripts/getCloudState.sh e_\$1 >> $TMP_FILE_LOG_CLOUD_STATE\"_\"\$2" >> /root/action.sh
+                echo "$PROJECT_PATH/experiments/rubis_energy_iaas/scripts/getCloudState.sh e_\$1 \$2 >> $TMP_FILE_LOG_CLOUD_STATE\"_\"\$2" >> /root/action.sh
                 tiers=
 		for i in `seq 1 $NUMBER_APPLICATIONS`
 		do
@@ -284,9 +298,12 @@ do
 		kill $LOGSTASH_PID
 
 		#on sauvegarde les donnée liées à létat de la plateforme
-		cp ${TMP_FILE_LOG_CLOUD_STATE}"*" $path_experiment/
+		cp ${TMP_FILE_LOG_CLOUD_STATE}_* $path_experiment/
 #state_plateforme.log
-		
+		cp /share/elasticity_manager/yet_another_log.txt $path_experiment/
+		cp /tmp/std*_logstash $path_experiment/
+
+	
 		#on sauvegarde les données liées à gatling (temps de réponse)	
 	#	mv $PROJECT_PATH/gatling/results/* $path_experiment/
 	

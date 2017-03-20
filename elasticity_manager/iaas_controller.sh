@@ -8,14 +8,14 @@ workInc=$5  # current workload increase.
 maxVM=6
 minVM=1
 addVmNumber=1
-redrt=.50 # it should be "target responseTime/2"
-decWork=1 # ration of (currentRequest/MedianRequest)
+redrt=.20 # it should be "target responseTime/2"
+decWork=0.8 # ration of (currentRequest/MedianRequest)
 
-cold_period_add='cold_period_add.txt'
+cold_period_add='/share/elasticity_manager/cold_period_add.txt'
 add_period=$(cat "$cold_period_add")
-cold_period_remove='cold_period_remove.txt'
+cold_period_remove='/share/elasticity_manager/cold_period_remove.txt'
 remove_period=$(cat "$cold_period_remove")
-instanceNumber='instance_number.txt'
+instanceNumber='/share/elasticity_manager/instance_number.txt'
 vm=$(cat "$instanceNumber")
 #oldR0=`cat $recZeroFile`
 
@@ -70,7 +70,7 @@ then
        
              echo "VM number now : $vmNumber"
              echo "$vmNumber" > "$instanceNumber"
-            echo "$coolingTime" > "$cold_period_remove"
+            echo "$coolingTime" > "$cold_period_add"
             echo "Cooling period end : $coolingTime"
 
 else 
