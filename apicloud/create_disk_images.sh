@@ -83,8 +83,10 @@ do
 	ok=$?
 done
 
-ssh -i /tmp/id_rsa ubuntu@$ip_adress "(echo '127.0.0.1 basic-tmp' ; cat /etc/hosts) > tmp"
-ssh -i /tmp/id_rsa ubuntu@$ip_adress "cat tmp > /etc/hosts"
+#ssh -i /tmp/id_rsa ubuntu@$ip_adress "(echo '127.0.0.1 basic-tmp' ; cat /etc/hosts) > tmp"
+#ssh -i /tmp/id_rsa ubuntu@$ip_adress "cat tmp > /etc/hosts"
+
+ssh -i $PATH_KEYPAIR/id_rsa ubuntu@$ip_adress "echo '127.0.0.1 basic-tmp' | sudo tee -a /etc/hosts"
 
 #ssh -o "StrictHostKeyChecking no" ubuntu@$ip_adress -i $PATH_KEYPAIR/id_rsa "sed '2i127.0.0.1 '\$(hostname) /etc/hosts > ~/hosts;mv ~/hosts /etc/hosts"
 ssh -o "StrictHostKeyChecking no" ubuntu@$ip_adress -i $PATH_KEYPAIR/id_rsa 'sudo touch /etc/apt/apt.conf.d/proxy-guess'

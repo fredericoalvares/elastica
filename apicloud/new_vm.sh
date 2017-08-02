@@ -140,8 +140,10 @@ done
 #il faut spécifier le nom du tier à la machine dans le fichier $DEFAULT_LOCAL_CONF_PATH/name_tier.info
 #ssh -i /tmp/id_rsa ubuntu@$ip_adress "(echo '127.0.0.1 $name_vm' ; cat /etc/hosts) > tmp"
 
-ssh -i /tmp/id_rsa ubuntu@$ip_adress "sed 's/basic-tmp/'\$(hostname)'/g' /etc/hosts > tmp" 
-ssh -i /tmp/id_rsa ubuntu@$ip_adress "cat tmp > /etc/hosts"
+#ssh -i /tmp/id_rsa ubuntu@$ip_adress "sed 's/basic-tmp/'\$(hostname)'/g' /etc/hosts > tmp" 
+#ssh -i /tmp/id_rsa ubuntu@$ip_adress "cat tmp > /etc/hosts"
+
+ssh -i $PATH_KEYPAIR/id_rsa ubuntu@$ip_adress "cat /etc/hosts | sed 's/basic-tmp/'\$(hostname)'/g' | sudo tee -a /etc/hosts"
 
 ssh -o "StrictHostKeyChecking no" ubuntu@$ip_adress -i $PATH_KEYPAIR/id_rsa "sudo echo $name_tier > $DEFAULT_LOCAL_CONF_PATH/name_tier.info"
 
