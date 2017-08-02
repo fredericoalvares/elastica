@@ -140,18 +140,18 @@ init_plateforme () {
 #      DB_IP_ADDRESS=`nova list | grep db-rubis$i | tr "|" " " |tr -s " " | cut -d ' ' -f7 | cut -d '=' -f2 | cut -d ',' -f1`
 #      echo $DB_IP_ADDRESS > $DB_INFO_FILE
       echo "Scaling $name_tier$i on host "${nodes_array[$i]}
-      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i ${nodes_array[$i]} 
-      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i ${nodes_array[$i]} 
-      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i ${nodes_array[$i]} 
-      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i ${nodes_array[$i]} 
-      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i ${nodes_array[$i]} 
-      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i ${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i #${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i #${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i #${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i #${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i #${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp.sh out $name_tier$i #${nodes_array[$i]} 
 
-      $PROJECT_PATH/apicloud/scale-iaas-lamp2.sh "in" $name_tier$i ${nodes_array[$i]} 
-      $PROJECT_PATH/apicloud/scale-iaas-lamp2.sh "in" $name_tier$i ${nodes_array[$i]} 
-      $PROJECT_PATH/apicloud/scale-iaas-lamp2.sh "in" $name_tier$i ${nodes_array[$i]} 
-      $PROJECT_PATH/apicloud/scale-iaas-lamp2.sh "in" $name_tier$i ${nodes_array[$i]} 
-      $PROJECT_PATH/apicloud/scale-iaas-lamp2.sh "in" $name_tier$i ${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp2.sh "in" $name_tier$i #${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp2.sh "in" $name_tier$i #${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp2.sh "in" $name_tier$i #${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp2.sh "in" $name_tier$i #${nodes_array[$i]} 
+      $PROJECT_PATH/apicloud/scale-iaas-lamp2.sh "in" $name_tier$i #${nodes_array[$i]} 
 
 
       echo "0" > "/share/elasticity_manager/cloud_state_"$name_tier$i".txt"
